@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dimensionado de cintas transportadoras</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Semi+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+  <!-- «?v=6»: obliga al navegador a cargar la versión nueva y no la de la caché -->
+  <link rel="stylesheet" href="styles.css?v=6">
+  <script src="script.js?v=6" defer></script>
+</head>
+<body>
+<main class="pagina">
+
+  <header class="cabecera">
+    <div class="titulo">
+      <h1>Dimensionado de cintas transportadoras</h1>
+      <p>Capacidad, resistencias al avance, potencia, tensiones y número de capas según los apuntes de Transporte y Manutención Industrial (USAL), ISO 5048 y DIN 22101.</p>
+    </div>
+    <div class="eleccion">
+      <label for="selector-ejemplo">Datos de partida</label>
+      <div class="eleccion-fila">
+        <select id="selector-ejemplo"></select>
+        <button type="button" id="recargar" title="Vuelve a cargar los datos de la opción elegida">Recargar datos</button>
+      </div>
+      <p class="ayuda" id="enunciado">Elige un ejemplo de los apuntes o «Datos propios» y cambia cualquier valor: todo se recalcula al momento.</p>
+    </div>
+  </header>
+
+  <p id="estado" role="alert"></p>
+
+  <section class="lamina" aria-label="Esquema de la cinta">
+    <canvas id="esquema" role="img" aria-label="Esquema de la cinta con tambor motriz en cabeza, tensiones T1 y T2 y ángulo de abrazamiento"></canvas>
+    <div id="resumen" class="resumen" aria-live="polite"></div>
+  </section>
+
+
+  <form autocomplete="off" novalidate>
+
+    <!-- CAUDAL: el dato principal. Al moverlo se ajusta el ancho o la velocidad. -->
+    <section class="paso paso-caudal" id="paso-caudal">
+      <h2><span class="num">Q</span>Caudal a transportar</h2>
+      <div class="caudal-cuerpo">
+        <label class="campo"><span>Caudal <i>Q</i></span>
+          <span class="entrada"><input type="number" step="any" min="0" id="Qdato" data-campo><em>t/h</em></span></label>
+        <label class="campo"><span>Para conseguirlo se ajusta</span>
+          <select id="ajusteCaudal" data-campo>
+            <option value="ancho">El ancho de banda B</option>
+            <option value="velocidad">La velocidad v (normalizada DIN)</option>
+            <option value="ninguno">Nada: solo cambia la carga del material</option>
+          </select></label>
+        <input type="range" id="desl-caudal" class="deslizador campo-ancho" min="0" max="500" step="1" aria-label="Caudal en t/h">
+        <p class="ayuda campo-ancho" id="caudal-estado" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <!-- PASO 1 -->
+    <section class="paso" id="paso-geometria">
+      <h2><span class="num">1</span>Trazado y velocidad</h2>
+      <div class="paso-cuerpo">
+        <div class="campos">
+          <label class="campo"><span>Longitud entre tambores <i>L</i></span>
+            <span class="entrada"><input type="number" step="any" id="L" data-campo><em>m</em></span></label>
+          <label class="campo"><span>Inclinación definida por</span>
+            <select id="modoIncl" data-campo>
+              <option value="H">Desnivel H</option>
+              <option value="angulo">Ángulo δ</option>
+            </select></label>
+          <label class="campo" data-si="modoIncl=H"><span>Desnivel <i>H</i> (+ sube, − baja)</span>
+            <span class="entrada"><input type="number" step="any" id="H" data-campo><em>m</em></span></label>
+          <label class="campo" data-si="modoIncl=angulo"><span>Ángulo de inclinación <i>δ</i></span>
+            <span class="entrada"><input type="number" step="any" id="anguloDeg" data-campo><em>°</em></span></label>
+          <label class="campo"><span>Velocidad de la banda <i>v</i></span>
+            <span class="entrada"><input type="number" step="any" id="v" data-campo list="vel-din"><em>m/s</em></span></label>
+          <label class="campo campo-ancho"><span>Ajuste rápido de la inclinación <i>δ</i></span>
+            <input type="range" id="desl-incl" class="deslizador" min="-30" max="30" step="0.5" aria-label="Inclinación en grados"></label>
+          <datalist id="vel-din">
+            <option value="0.66"><option value="0.84"><option value="1.05"><option value="1.31"><option value="1.68">
+            <option value="2.09"><option value="2.62"><option value="3.35"><option value="4.19"><option value="5.24">
+          </datalist>
+        </div>
+        <div class="resultados">
+          <canvas id="incl" class="lienzo-seccion lienzo-alto" role="img" aria-label="Triángulo de inclinación con la descomposición del peso del material"></canvas>
+          <div id="res-geometria"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PASO 2 -->
+    <section class="paso" id="paso-capacidad">
+      <h2><span class="num">2</span>Capacidad de transporte</h2>
+      <div class="paso-cuerpo">
+        <div class="campos">
+          <label class="campo campo-ancho"><span>Material transportado (tabla de materiales a granel)</span>
+            <select id="material" data-campo>
+              <option value="">Personalizado: introduzco ρ, β y la clase a mano</option>
+            </select></label>
+          <label class="campo"><span>Sección del material</span>
+            <select id="metodoSeccion" data-campo>
+              <option value="geometrico">Cálculo geométrico (S₁ + S₂)</option>
+              <option value="tabla">Tabla Rulmeca (3 rodillos, v = 1 m/s)</option>
+              <option value="directa">Sección conocida</option>
+            </select></label>
+          <label class="campo"><span>Ancho de banda <i>B</i></span>
+            <select id="B" data-campo data-tipo="num"></select></label>
+          <label class="campo" data-si="metodoSeccion=geometrico"><span>Rodillos por estación</span>
+            <select id="nRodillos" data-campo data-tipo="num">
+              <option value="1">1 (plana)</option>
+              <option value="2">2 (en V)</option>
+              <option value="3">3 (artesa)</option>
+            </select></label>
+          <label class="campo" data-si="metodoSeccion=geometrico|tabla"><span>Ángulo de terna <i>λ</i></span>
+            <span class="entrada"><input type="number" step="any" id="lambda" data-campo><em>°</em></span>
+            <input type="range" id="desl-lambda" class="deslizador" min="0" max="60" step="5" aria-label="Ángulo de terna en grados"></label>
+          <label class="campo" data-si="metodoSeccion=geometrico|tabla"><span>Ángulo de sobrecarga <i>β</i> (talud dinámico)</span>
+            <span class="entrada"><input type="number" step="any" id="talud" data-campo><em>°</em></span></label>
+          <label class="campo" data-si="metodoSeccion=directa"><span>Sección transversal <i>S</i></span>
+            <span class="entrada"><input type="number" step="any" id="Sdirecta" data-campo><em>m²</em></span></label>
+          <label class="campo"><span>Densidad aparente <i>ρ</i></span>
+            <span class="entrada"><input type="number" step="any" id="rho" data-campo><em>kg/m³</em></span></label>
+          <label class="campo"><span>Clase de material (Tabla 1.3)</span>
+            <select id="claseMaterial" data-campo>
+              <option value="">Sin comprobar</option>
+              <option value="A">A: ligeros, no abrasivos</option>
+              <option value="B">B: poco abrasivos</option>
+              <option value="C">C: medianamente abrasivos</option>
+              <option value="D">D: muy abrasivos</option>
+            </select></label>
+          <label class="campo" data-si="claseMaterial=A|B|C|D"><span>Granulometría</span>
+            <select id="tipoTamano" data-campo>
+              <option value="uniforme">Uniforme</option>
+              <option value="mixto">Mixto</option>
+            </select></label>
+          <label class="campo" data-si="claseMaterial=A|B|C|D"><span>Tamaño máximo de fragmento</span>
+            <span class="entrada"><input type="number" step="any" id="tamano" data-campo><em>mm</em></span></label>
+        </div>
+        <div class="resultados">
+          <canvas id="seccion" class="lienzo-seccion" role="img" aria-label="Sección transversal de la banda con el material"></canvas>
+          <div id="res-capacidad"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PASO 3 -->
+    <section class="paso" id="paso-resistencias">
+      <h2><span class="num">3</span>Resistencias al movimiento</h2>
+      <div class="paso-cuerpo">
+        <div class="campos">
+          <label class="campo"><span>Fuerza periférica <i>Fu</i></span>
+            <select id="modoFu" data-campo>
+              <option value="calculo">Calcular a partir de las resistencias</option>
+              <option value="directa">Conocida</option>
+              <option value="potencia">A partir de la potencia útil</option>
+            </select></label>
+          <label class="campo" data-si="modoFu=directa"><span>Fuerza periférica <i>Fu</i></span>
+            <span class="entrada"><input type="number" step="any" id="FuDirecta" data-campo><em>N</em></span></label>
+          <label class="campo" data-si="modoFu=potencia"><span>Potencia útil transmitida <i>P</i></span>
+            <span class="entrada"><input type="number" step="any" id="Pdato" data-campo><em>kW</em></span></label>
+
+          <label class="campo" data-si="modoFu=calculo"><span>Método de cálculo</span>
+            <select id="metodo" data-campo>
+              <option value="auto">Automático (global si L ≤ 80 m)</option>
+              <option value="global">Global (resistencia a resistencia)</option>
+              <option value="simplificado">Simplificado (longitud corregida)</option>
+            </select></label>
+          <label class="campo" data-si="modoFu=calculo"><span>Coeficiente ficticio <i>f</i></span>
+            <span class="entrada"><input type="number" step="any" id="f" data-campo></span>
+            <select id="ayuda-f" class="ayuda-select" aria-label="Valores orientativos de f"><option value="">Valores orientativos…</option></select></label>
+          <label class="campo" data-si="modoFu=calculo&metodo=auto|simplificado"><span>Coeficiente <i>C</i></span>
+            <select id="modoC" data-campo>
+              <option value="tabla">Tabla C(L) interpolada</option>
+              <option value="manual">Valor propio</option>
+            </select></label>
+          <label class="campo" data-si="modoFu=calculo&metodo=auto|simplificado&modoC=manual"><span>Valor de <i>C</i></span>
+            <span class="entrada"><input type="number" step="any" id="C" data-campo></span></label>
+          <label class="campo" data-si="modoFu=calculo"><span>Masa giratoria de rodillos <i>q<sub>RO</sub> + q<sub>RU</sub></i></span>
+            <span class="entrada"><input type="number" step="any" id="qR" data-campo><em>kg/m</em></span></label>
+          <label class="campo"><span>Masa de la banda por ramal <i>q<sub>b</sub></i></span>
+            <span class="entrada"><input type="number" step="any" id="qb" data-campo><em>kg/m</em></span></label>
+          <label class="campo"><span>Carga del material <i>q<sub>g</sub></i></span>
+            <select id="modoQg" data-campo>
+              <option value="manual">Dato</option>
+              <option value="capacidad">Desde la capacidad (S·ρ·K)</option>
+              <option value="caudal">Desde el caudal Q (t/h)</option>
+            </select></label>
+          <label class="campo" data-si="modoQg=manual"><span>Valor de <i>q<sub>g</sub></i></span>
+            <span class="entrada"><input type="number" step="any" id="qg" data-campo><em>kg/m</em></span></label>
+          <label class="campo" data-si="modoFu=calculo&metodo=auto|global"><span>Velocidad inicial del material <i>v₀</i></span>
+            <span class="entrada"><input type="number" step="any" id="v0" data-campo><em>m/s</em></span></label>
+          <label class="campo" data-si="modoFu=calculo&metodo=auto|global"><span>Tambores no motrices <i>F<sub>N,tamb</sub></i></span>
+            <span class="entrada"><input type="number" step="any" id="FNtamb" data-campo><em>N</em></span></label>
+          <label class="campo" data-si="modoFu=calculo"><span>Principales especiales <i>F<sub>S1</sub></i></span>
+            <span class="entrada"><input type="number" step="any" id="FS1" data-campo><em>N</em></span></label>
+          <label class="campo" data-si="modoFu=calculo"><span>Secundarias especiales <i>F<sub>S2</sub></i> (limpiadores…)</span>
+            <span class="entrada"><input type="number" step="any" id="FS2" data-campo><em>N</em></span></label>
+        </div>
+        <div class="resultados" id="res-resistencias"></div>
+      </div>
+    </section>
+
+    <!-- PASO 4 -->
+    <section class="paso" id="paso-potencia">
+      <h2><span class="num">4</span>Potencia y accionamiento</h2>
+      <div class="paso-cuerpo">
+        <div class="campos">
+          <label class="campo"><span>Rendimiento motor-reductor <i>η</i></span>
+            <span class="entrada"><input type="number" step="any" id="eta" data-campo></span></label>
+          <label class="campo"><span>Diámetro del tambor motriz <i>D</i></span>
+            <span class="entrada"><input type="number" step="any" id="D" data-campo><em>mm</em></span></label>
+        </div>
+        <div class="resultados" id="res-potencia"></div>
+      </div>
+    </section>
+
+    <!-- PASO 5 -->
+    <section class="paso" id="paso-tensiones">
+      <h2><span class="num">5</span>Tensiones: adherencia y flecha</h2>
+      <div class="paso-cuerpo">
+        <div class="campos">
+          <label class="campo"><span>Rozamiento banda–tambor <i>μ</i></span>
+            <span class="entrada"><input type="number" step="any" id="mu" data-campo></span></label>
+          <label class="campo"><span>Ángulo de abrazamiento <i>θ</i></span>
+            <span class="entrada"><input type="number" step="any" id="theta" data-campo><em>°</em></span>
+            <input type="range" id="desl-theta" class="deslizador" min="30" max="330" step="5" aria-label="Ángulo de abrazamiento en grados"></label>
+          <label class="campo"><span>T2 adoptada (vacío = automática)</span>
+            <span class="entrada"><input type="number" step="any" id="T2" data-campo data-opcional placeholder="automática"><em>N</em></span></label>
+          <label class="campo" data-si="T2="><span>Margen sobre la T2 mínima</span>
+            <span class="entrada"><input type="number" step="any" id="margen" data-campo><em>%</em></span></label>
+          <label class="campo"><span>T1 máxima admisible (opcional)</span>
+            <span class="entrada"><input type="number" step="any" id="T1adm" data-campo data-opcional placeholder="sin límite"><em>N</em></span></label>
+          <label class="campo"><span>Separación de rodillos</span>
+            <select id="modoSep" data-campo>
+              <option value="auto">Automática (paso 7)</option>
+              <option value="dato">Dato (ejemplos de los apuntes)</option>
+            </select></label>
+          <label class="campo" data-si="modoSep=dato"><span>Separación rodillos portantes <i>l<sub>R,sup</sub></i></span>
+            <span class="entrada"><input type="number" step="any" id="lRsup" data-campo><em>m</em></span></label>
+          <label class="campo" data-si="modoSep=dato"><span>Separación rodillos de retorno <i>l<sub>R,inf</sub></i></span>
+            <span class="entrada"><input type="number" step="any" id="lRinf" data-campo><em>m</em></span></label>
+          <label class="campo"><span>Flecha relativa máxima</span>
+            <span class="entrada"><input type="number" step="any" id="hrelMax" data-campo><em>%</em></span></label>
+          <label class="campo"><span>Tensión local ramal portante (opcional)</span>
+            <span class="entrada"><input type="number" step="any" id="Tsup" data-campo data-opcional placeholder="= T2"><em>N</em></span></label>
+          <label class="campo"><span>Tensión local ramal de retorno (opcional)</span>
+            <span class="entrada"><input type="number" step="any" id="Tinf" data-campo data-opcional placeholder="= T2"><em>N</em></span></label>
+        </div>
+        <div class="resultados">
+          <canvas id="tambor" class="lienzo-seccion lienzo-alto" role="img" aria-label="Tambor motriz con el arco de contacto y las tensiones T1 y T2"></canvas>
+          <div id="res-tensiones"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PASO 6 -->
+    <section class="paso" id="paso-capas">
+      <h2><span class="num">6</span>Número de capas de la banda</h2>
+      <div class="paso-cuerpo">
+        <div class="campos">
+          <label class="campo"><span>Resistencia por capa <i>R</i></span>
+            <span class="entrada"><input type="number" step="any" id="R" data-campo><em>N/mm</em></span></label>
+          <label class="campo"><span>Tensión máxima de cálculo</span>
+            <select id="modoTmax" data-campo>
+              <option value="T1">T1 del paso 5</option>
+              <option value="manual">Valor propio</option>
+            </select></label>
+          <label class="campo" data-si="modoTmax=manual"><span>Tensión máxima <i>T<sub>máx</sub></i></span>
+            <span class="entrada"><input type="number" step="any" id="TmaxManual" data-campo><em>N</em></span></label>
+          <label class="campo"><span>Mínimo constructivo de capas</span>
+            <span class="entrada"><input type="number" step="1" min="1" id="zMin" data-campo></span></label>
+          <p class="ayuda">El ancho <i>B</i> es el elegido en el paso 2.</p>
+        </div>
+        <div class="resultados" id="res-capas"></div>
+      </div>
+    </section>
+  </form>
+
+  <!-- PASO 7: separación entre artesas, automática (sin datos que escribir) -->
+  <section class="paso" id="paso-separacion">
+    <h2><span class="num">7</span>Separación entre artesas (automática)</h2>
+    <div class="paso-cuerpo">
+      <div class="campos">
+        <p class="ayuda">No hay nada que escribir: la separación se calcula sola con la cinta de los pasos anteriores y se usa en el paso 5.</p>
+        <p class="ayuda">Artesas: la mayor separación (múltiplo de 5 cm) que cumple la flecha admisible con T2, el tramo más desfavorable, limitada a lo habitual de 1–1,5 m. Retorno: 2 a 3 veces la de artesas, como mucho 3 m.</p>
+        <canvas id="vano" class="lienzo-seccion lienzo-alto campo-ancho" role="img" aria-label="Vano entre dos artesas con la flecha de la banda"></canvas>
+      </div>
+      <div class="resultados" id="res-separacion"></div>
+    </div>
+  </section>
+
+  <footer class="pie">
+    <p>Archivos: <code>index.html</code> estructura la página, <code>styles.css</code> le da estilo, <code>tablas.json</code> guarda las tablas técnicas, <code>materiales.json</code> las propiedades de los materiales a granel, <code>ejemplos.json</code> guarda los ejemplos, <code>script.js</code> calcula y dibuja todos los pasos. Versión 6.</p>
+    <p>Herramienta didáctica de predimensionado en régimen estacionario: no incluye arranque, frenado ni ondas elásticas transitorias. Revisa siempre los valores con los catálogos del fabricante.</p>
+  </footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,30 @@
+{
+  "_descripcion": "Propiedades de materiales a granel más habituales (selección de las tablas de Cintas transportadoras III, diapositivas 14 y 15). densidad en t/m³ [mín, máx]; ángulo de reposo α e inclinación máxima en banda δ en grados [mín, máx]; null si la tabla no da el dato.",
+  "fluidezSobrecarga": {
+    "_fuente": "Diapositiva 10: ángulo de sobrecarga β según la fluidez (para «Normal» la tabla da 20°-25°; se toma 20°). «Fluida» se asimila a «Buena» y «Poco fluida» a 25°.",
+    "Muy buena": 5,
+    "Buena": 10,
+    "Bueno": 10,
+    "Fluida": 10,
+    "Normal": 20,
+    "Poco fluida": 25,
+    "Mala": 30
+  },
+  "reposoFluidez": {
+    "_fuente": "Diapositiva 10: si falta la fluidez se estima con el ángulo de reposo α.",
+    "limites": [20, 30, 40],
+    "fluidez": ["Muy buena", "Buena", "Normal", "Mala"]
+  },
+  "materiales": [
+    {"id": "m08", "grupo": "Minerales, áridos y otros", "nombre": "ARENA seca", "estado": "Dragada 3", "densidad": [1.5, 1.8], "reposo": [35, 35], "inclinacionMax": [16, 18], "fluidez": "Normal", "otras": "Muy abrasiva"},
+    {"id": "m09", "grupo": "Minerales, áridos y otros", "nombre": "ARENA húmeda", "estado": "Apelmazada 3", "densidad": [1.7, 2.1], "reposo": [45, 45], "inclinacionMax": [20, 22], "fluidez": "Mala", "otras": "Muy abrasiva"},
+    {"id": "m63", "grupo": "Minerales, áridos y otros", "nombre": "GRAVA extraída de gravera", "estado": "Seca y lavada", "densidad": [1.4, 1.6], "reposo": [35, 35], "inclinacionMax": [16, 16], "fluidez": "Normal", "otras": "Muy abrasiva"},
+    {"id": "m60", "grupo": "Minerales, áridos y otros", "nombre": "GRANITO cribado", "estado": "10-150", "densidad": [1.4, 1.5], "reposo": [35, 35], "inclinacionMax": [18, 18], "fluidez": "Normal", "otras": "Muy abrasivo"},
+    {"id": "m28", "grupo": "Minerales, áridos y otros", "nombre": "CALIZA triturada", "estado": "3-15", "densidad": [1.3, 1.5], "reposo": [38, 38], "inclinacionMax": [18, 18], "fluidez": "Normal", "otras": "Abrasiva"},
+    {"id": "m03", "grupo": "Minerales, áridos y otros", "nombre": "ARCILLA seca", "estado": "15-75", "densidad": [1, 1.2], "reposo": [35, 35], "inclinacionMax": [18, 20], "fluidez": "Normal", "otras": "Abrasiva"},
+    {"id": "m39", "grupo": "Minerales, áridos y otros", "nombre": "CEMENTO Portland", "estado": "A granel", "densidad": [1.5, 1.5], "reposo": [40, 40], "inclinacionMax": [20, 23], "fluidez": "Muy buena", "otras": "Abrasiva"},
+    {"id": "m41", "grupo": "Minerales, áridos y otros", "nombre": "CEMENTO", "estado": "Clínker 0-40", "densidad": [1.3, 1.5], "reposo": [30, 40], "inclinacionMax": [18, 20], "fluidez": "Mala", "otras": "Muy abrasiva"},
+    {"id": "m81", "grupo": "Combustibles", "nombre": "HULLA bituminosa", "estado": "15", "densidad": [0.7, 0.8], "reposo": [38, 38], "inclinacionMax": [22, 22], "fluidez": "Normal", "otras": "No abrasiva, algo corrosiva"},
+    {"id": "m75", "grupo": "Combustibles", "nombre": "COQUE suelto", "estado": "3", "densidad": [0.35, 0.55], "reposo": [30, 45], "inclinacionMax": [18, 18], "fluidez": "Normal", "otras": "Muy abrasivo, friable"}
+  ]
+}

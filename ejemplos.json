@@ -1,0 +1,357 @@
+{
+  "_descripcion": "Datos de entrada de la aplicación. «propios» son los valores iniciales para un diseño libre; «baseEjemplos» se aplica antes de cada ejemplo; cada ejemplo solo indica los datos que cambian.",
+  "propios": {
+    "material": "m60",
+    "metodoSeccion": "geometrico",
+    "B": 650,
+    "nRodillos": 3,
+    "lambda": 30,
+    "talud": 20,
+    "Sdirecta": 0.05,
+    "rho": 1450,
+    "claseMaterial": "C",
+    "tipoTamano": "uniforme",
+    "tamano": 70,
+    "L": 120,
+    "modoIncl": "H",
+    "H": 6,
+    "anguloDeg": 0,
+    "v": 2.09,
+    "modoFu": "calculo",
+    "FuDirecta": 1000,
+    "Pdato": 10,
+    "metodo": "auto",
+    "f": 0.02,
+    "modoC": "tabla",
+    "C": 1.6,
+    "qb": 10,
+    "modoQg": "caudal",
+    "Qdato": 250,
+    "ajusteCaudal": "ancho",
+    "qg": 30,
+    "qR": 15,
+    "v0": 0,
+    "FNtamb": 50,
+    "FS1": 0,
+    "FS2": 60,
+    "eta": 0.9,
+    "D": 500,
+    "mu": 0.3,
+    "theta": 200,
+    "T2": null,
+    "margen": 20,
+    "T1adm": null,
+    "lRsup": 1.2,
+    "lRinf": 3.0,
+    "hrelMax": 1,
+    "Tsup": null,
+    "Tinf": null,
+    "R": 160,
+    "modoTmax": "T1",
+    "TmaxManual": 10000,
+    "zMin": 3,
+    "modoSep": "auto"
+  },
+  "baseEjemplos": {
+    "material": "",
+    "metodoSeccion": "geometrico",
+    "B": 800,
+    "nRodillos": 3,
+    "lambda": 30,
+    "talud": 20,
+    "Sdirecta": 0.05,
+    "rho": 1500,
+    "claseMaterial": "",
+    "tipoTamano": "uniforme",
+    "tamano": 0,
+    "L": 60,
+    "modoIncl": "H",
+    "H": 0,
+    "anguloDeg": 0,
+    "v": 2,
+    "modoFu": "calculo",
+    "FuDirecta": 1000,
+    "Pdato": 10,
+    "metodo": "auto",
+    "f": 0.02,
+    "modoC": "manual",
+    "C": 1.45,
+    "qb": 8,
+    "modoQg": "manual",
+    "Qdato": 180,
+    "ajusteCaudal": "ninguno",
+    "qg": 25,
+    "qR": 10,
+    "v0": 0,
+    "FNtamb": 0,
+    "FS1": 0,
+    "FS2": 0,
+    "eta": 0.9,
+    "D": 400,
+    "mu": 0.3,
+    "theta": 180,
+    "T2": null,
+    "margen": 20,
+    "T1adm": null,
+    "lRsup": 1.2,
+    "lRinf": 2.4,
+    "hrelMax": 1,
+    "Tsup": null,
+    "Tinf": null,
+    "R": 160,
+    "modoTmax": "T1",
+    "TmaxManual": 10000,
+    "zMin": 3,
+    "modoSep": "dato"
+  },
+  "ejemplos": [
+    {
+      "id": "ej1",
+      "titulo": "Ejemplo 1. Resistencias de avance (L = 60 m)",
+      "enunciado": "Cinta horizontal, L = 60 m, v = 2 m/s, qb = 8 kg/m, qg = 25 kg/m, qR = 10 kg/m, f = 0,02, v₀ = 0, resistencia de tambores no motrices 20 N y limpiador 40 N. Como L < 80 m se usa el método global.",
+      "seccion": "resistencias",
+      "datos": {
+        "L": 60,
+        "v": 2,
+        "metodo": "global",
+        "v0": 0,
+        "FNtamb": 20,
+        "FS2": 40
+      }
+    },
+    {
+      "id": "ej2",
+      "titulo": "Ejemplo 2. Longitud corregida (L = 200 m)",
+      "enunciado": "Cinta horizontal, L = 200 m, v = 2 m/s, mismas masas que el ejemplo 1, f = 0,02, C = 1,45 y limpiador de 40 N. Método simplificado.",
+      "seccion": "resistencias",
+      "datos": {
+        "L": 200,
+        "v": 2,
+        "metodo": "simplificado",
+        "C": 1.45,
+        "FS2": 40
+      }
+    },
+    {
+      "id": "ej3",
+      "titulo": "Ejemplo 3. Potencia, par y giro",
+      "enunciado": "Cinta del ejemplo 1 con rendimiento ηt = 0,90 y radio del tambor r = 0,20 m (D = 400 mm).",
+      "seccion": "potencia",
+      "datos": {
+        "L": 60,
+        "v": 2,
+        "metodo": "global",
+        "FNtamb": 20,
+        "FS2": 40,
+        "eta": 0.9,
+        "D": 400
+      }
+    },
+    {
+      "id": "ej4",
+      "titulo": "Ejemplo 4. Tensiones límite para evitar el deslizamiento",
+      "enunciado": "Cinta del ejemplo 1 con θ = 180°, μ = 0,30, T2 inicial = 400 N y T1 máxima admisible = 1500 N. Con T2 = 400 N la cinta patina; prueba después a escribir T2 = 600 N (valor adoptado en los apuntes: T1 = 1360,37 N y reserva del 23,6 %).",
+      "seccion": "tensiones",
+      "datos": {
+        "L": 60,
+        "v": 2,
+        "metodo": "global",
+        "FNtamb": 20,
+        "FS2": 40,
+        "mu": 0.3,
+        "theta": 180,
+        "T2": 400,
+        "T1adm": 1500
+      }
+    },
+    {
+      "id": "ej5",
+      "titulo": "Ejemplo 5. Flecha de la cinta entre rodillos",
+      "enunciado": "qb = 8 kg/m, qg = 25 kg/m, separación 1,20 m (portante) y 2,40 m (retorno), tensiones locales 5000 N y 2500 N, flecha relativa máxima del 1 %.",
+      "seccion": "tensiones",
+      "datos": {
+        "qb": 8,
+        "qg": 25,
+        "lRsup": 1.2,
+        "lRinf": 2.4,
+        "Tsup": 5000,
+        "Tinf": 2500,
+        "hrelMax": 1
+      }
+    },
+    {
+      "id": "ej6",
+      "titulo": "Ejemplo 6. Resistencia a la rotura (número de capas)",
+      "enunciado": "Tmáx = 18 000 N, B = 800 mm, R = 160 N/mm (EP 160). Los apuntes adoptan 2 capas, por eso aquí el mínimo constructivo se pone a 1.",
+      "seccion": "capas",
+      "datos": {
+        "modoTmax": "manual",
+        "TmaxManual": 18000,
+        "B": 800,
+        "R": 160,
+        "zMin": 1
+      }
+    },
+    {
+      "id": "ej7",
+      "titulo": "Ejemplo 7. Resistencias con desnivel (H = 4 m)",
+      "enunciado": "L = 50 m, H = 4 m (ascendente), v = 1,5 m/s, qb = 10, qg = 30, qR = 12 kg/m, f = 0,025, v₀ = 0,5 m/s, tambores no motrices 25 N, limpiador 50 N.",
+      "seccion": "resistencias",
+      "datos": {
+        "L": 50,
+        "H": 4,
+        "v": 1.5,
+        "qb": 10,
+        "qg": 30,
+        "qR": 12,
+        "f": 0.025,
+        "v0": 0.5,
+        "FNtamb": 25,
+        "FS2": 50,
+        "metodo": "global"
+      }
+    },
+    {
+      "id": "ej8",
+      "titulo": "Ejemplo 8. Longitud corregida y desnivel (L = 250 m)",
+      "enunciado": "L = 250 m, H = 12 m, v = 2,5 m/s, qb = 9, qg = 30, qR = 12 kg/m, f = 0,025, C = 1,35, limpiador 60 N. Método simplificado.",
+      "seccion": "resistencias",
+      "datos": {
+        "L": 250,
+        "H": 12,
+        "v": 2.5,
+        "qb": 9,
+        "qg": 30,
+        "qR": 12,
+        "f": 0.025,
+        "C": 1.35,
+        "FS2": 60,
+        "metodo": "simplificado"
+      }
+    },
+    {
+      "id": "ej8b",
+      "titulo": "Ejemplo 8 (continuación). Diseño completo L = 200 m, H = 10 m",
+      "enunciado": "Diseño preliminar completo de las páginas 39 a 44: resistencias, potencia, adherencia (T2 adoptada 4000 N), flecha con tensiones locales 6000 N y 4000 N, y número de capas (EP 160, B = 800 mm).",
+      "seccion": "tensiones",
+      "datos": {
+        "L": 200,
+        "H": 10,
+        "v": 2,
+        "C": 1.45,
+        "FS2": 40,
+        "metodo": "simplificado",
+        "eta": 0.9,
+        "D": 400,
+        "mu": 0.3,
+        "theta": 180,
+        "T2": 4000,
+        "Tsup": 6000,
+        "Tinf": 4000,
+        "R": 160,
+        "B": 800,
+        "zMin": 3
+      }
+    },
+    {
+      "id": "ej9",
+      "titulo": "Ejemplo 9. Adherencia y ángulo de abrazamiento",
+      "enunciado": "Fu = 8000 N, T2 = 3000 N, μ = 0,30, θ = 180°. La adherencia no basta. Después prueba θ = 270° (tambor de reenvío): Fu,máx = 9336 N y reserva del 16,7 %.",
+      "seccion": "tensiones",
+      "datos": {
+        "modoFu": "directa",
+        "FuDirecta": 8000,
+        "T2": 3000,
+        "mu": 0.3,
+        "theta": 180
+      }
+    },
+    {
+      "id": "ej10",
+      "titulo": "Ejemplo 10. Incrementar T2 o incrementar θ",
+      "enunciado": "Fu = 12 000 N, T2 = 3500 N, μ = 0,28, θ = 180°, B = 800 mm, R = 160 N/mm, z = 3, S = 11. Después prueba θ = 315°: Fu,máx = 12 817 N y reserva del 6,8 %.",
+      "seccion": "tensiones",
+      "datos": {
+        "modoFu": "directa",
+        "FuDirecta": 12000,
+        "T2": 3500,
+        "mu": 0.28,
+        "theta": 180,
+        "B": 800,
+        "R": 160,
+        "zMin": 3,
+        "qb": 8,
+        "lRinf": 2.4
+      }
+    },
+    {
+      "id": "ej11",
+      "titulo": "Ejercicio 11. Potencia y velocidad de giro",
+      "enunciado": "Esfuerzo tangencial 1000 N, v = 2 m/s, rendimiento del 90 %, tambor de 200 mm de diámetro.",
+      "seccion": "potencia",
+      "datos": {
+        "modoFu": "directa",
+        "FuDirecta": 1000,
+        "v": 2,
+        "eta": 0.9,
+        "D": 200
+      }
+    },
+    {
+      "id": "ej12",
+      "titulo": "Ejercicio 12. Número de capas con S iterativo",
+      "enunciado": "Banda textil de 800 mm, R = 180 N/mm, Tmáx = 125 000 N. El coeficiente S depende del número de capas, así que se itera.",
+      "seccion": "capas",
+      "datos": {
+        "modoTmax": "manual",
+        "TmaxManual": 125000,
+        "B": 800,
+        "R": 180,
+        "zMin": 3
+      }
+    },
+    {
+      "id": "ej13",
+      "titulo": "Ejercicio 13. Capacidad de transporte",
+      "enunciado": "Granito uniforme, inclinación 20°, densidad aparente 1500 kg/m³, sección 0,014 m², v = 1,68 m/s.",
+      "seccion": "capacidad",
+      "datos": {
+        "metodoSeccion": "directa",
+        "Sdirecta": 0.014,
+        "rho": 1500,
+        "v": 1.68,
+        "modoIncl": "angulo",
+        "anguloDeg": 20,
+        "L": 100
+      }
+    },
+    {
+      "id": "ej14",
+      "titulo": "Ejercicio 14. Tensión mínima del tensor",
+      "enunciado": "Potencia transmitida 100 kW, v = 2 m/s, tambor de 400 mm, μ = 0,2, θ = 160°. Se pide T2 en el límite de deslizamiento.",
+      "seccion": "tensiones",
+      "datos": {
+        "modoFu": "potencia",
+        "Pdato": 100,
+        "v": 2,
+        "D": 400,
+        "mu": 0.2,
+        "theta": 160
+      }
+    },
+    {
+      "id": "ej15",
+      "titulo": "Ejercicio 15. Distancia máxima entre rodillos",
+      "enunciado": "Tensión en el tramo 20 kN, flecha admisible 1 %, masa lineal conjunta 150 kg/m (se introduce como qg = 150 y qb = 0 para que la carga del ramal portante sea 150 kg/m). También puedes resolverlo directamente en el paso 7 con «Cargar ejercicio 15».",
+      "seccion": "tensiones",
+      "datos": {
+        "qb": 0,
+        "qg": 150,
+        "Tsup": 20000,
+        "hrelMax": 1,
+        "modoFu": "directa",
+        "FuDirecta": 1000
+      }
+    }
+  ]
+}

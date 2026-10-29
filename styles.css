@@ -1,0 +1,292 @@
+/* ==========================================================================
+   styles.css: aspecto de la página.
+   Paleta inspirada en una cinta real: caucho de la banda, acero galvanizado
+   de rodillos y tambores, y el ocre del material a granel.
+   ========================================================================== */
+
+:root {
+  --fondo: #e9edf0;          /* chapa clara */
+  --superficie: #ffffff;
+  --tinta: #1a222c;
+  --tinta-suave: #5a6672;
+  --linea: #cfd6dc;
+  --banda: #26292d;          /* caucho */
+  --acero: #6f8896;          /* acero galvanizado */
+  --material: #c9a03a;       /* árido / mineral */
+  --acento: #1f5f7a;
+  --ok: #2d7448;
+  --mal: #b4322a;
+  --info: #7d6414;
+
+  --radio: 6px;
+  --sombra: 0 1px 2px rgb(26 34 44 / 0.06);
+  font-family: "Barlow", "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-size: 16px;
+  color: var(--tinta);
+  background: var(--fondo);
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; line-height: 1.45; }
+
+h1, h2 {
+  font-family: "Barlow Semi Condensed", "Barlow", "Arial Narrow", sans-serif;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.pagina {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 28px 20px 48px;
+}
+
+/* ---------- Cabecera ---------- */
+.cabecera {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 28px;
+  align-items: end;
+  margin-bottom: 20px;
+}
+.titulo h1 {
+  font-size: clamp(2rem, 4.2vw, 3.1rem);
+  margin: 0 0 10px;
+  letter-spacing: -0.01em;
+}
+.titulo p { margin: 0; color: var(--tinta-suave); max-width: 60ch; }
+
+.eleccion label { font-weight: 600; display: block; margin-bottom: 6px; }
+.eleccion-fila { display: flex; gap: 8px; }
+.eleccion-fila select { flex: 1; min-width: 0; font-weight: 500; }
+
+button {
+  font: inherit;
+  font-weight: 600;
+  padding: 9px 14px;
+  border: 1px solid var(--banda);
+  border-radius: var(--radio);
+  background: var(--banda);
+  color: #fff;
+  cursor: pointer;
+  white-space: nowrap;
+}
+button:hover { background: #3a3f45; }
+
+#estado { color: var(--mal); font-weight: 500; }
+#estado:empty { display: none; }
+
+/* ---------- Esquema y resumen: el elemento protagonista ---------- */
+.lamina {
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  overflow: hidden;
+}
+#esquema {
+  display: block;
+  width: 100%;
+  height: 260px;
+}
+.resumen {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  border-top: 4px solid var(--banda);
+}
+.resumen div {
+  padding: 12px 16px 14px;
+  border-right: 1px solid var(--linea);
+}
+.resumen div:last-child { border-right: 0; }
+.resumen span { display: block; font-size: 0.85rem; color: var(--tinta-suave); }
+.resumen strong {
+  font-family: "Barlow Semi Condensed", "Barlow", sans-serif;
+  font-size: 1.45rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Pasos del cálculo ---------- */
+.paso {
+  margin-top: 20px;
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+}
+.paso h2 {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0;
+  padding: 14px 22px;
+  font-size: 1.5rem;
+  border-bottom: 1px solid var(--linea);
+}
+.num {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--acero);
+  color: #fff;
+  font-size: 1.1rem;
+  flex: none;
+}
+.paso-cuerpo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+}
+.campos {
+  padding: 18px 22px 22px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 18px;
+  align-content: start;
+  border-right: 1px solid var(--linea);
+}
+.resultados { padding: 18px 22px 22px; background: #f6f8f9; }
+
+/* Campos del formulario */
+.campo { display: flex; flex-direction: column; gap: 5px; font-size: 0.92rem; }
+.campo[hidden] { display: none; }
+.campo > span:first-child { font-weight: 500; }
+.campo i { font-style: italic; font-family: "Cambria Math", Cambria, Georgia, serif; }
+.entrada { display: flex; align-items: stretch; }
+.entrada em {
+  font-style: normal;
+  display: grid;
+  place-items: center;
+  padding: 0 10px;
+  min-width: 48px;
+  border: 1px solid var(--linea);
+  border-left: 0;
+  border-radius: 0 var(--radio) var(--radio) 0;
+  background: var(--fondo);
+  color: var(--tinta-suave);
+  font-size: 0.85rem;
+}
+input, select {
+  font: inherit;
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #b9c3cb;
+  border-radius: var(--radio);
+  background: #fff;
+  color: var(--tinta);
+  font-variant-numeric: tabular-nums;
+}
+.entrada input { border-radius: var(--radio) 0 0 var(--radio); }
+.entrada input:only-child { border-radius: var(--radio); }
+input:focus-visible, select:focus-visible, button:focus-visible {
+  outline: 3px solid var(--acento);
+  outline-offset: 1px;
+}
+.ayuda-select { font-size: 0.85rem; padding: 5px 8px; color: var(--tinta-suave); }
+.ayuda { color: var(--tinta-suave); font-size: 0.85rem; margin: 4px 0 0; grid-column: 1 / -1; }
+.ayuda[hidden] { display: none; }
+
+/* Lista de resultados: etiqueta | valor, con la fórmula debajo */
+.lista-res {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  margin: 0;
+}
+.lista-res dt, .lista-res dd {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--linea);
+  margin: 0;
+}
+.lista-res dt { color: var(--tinta-suave); padding-right: 12px; }
+.lista-res dd { text-align: right; }
+.valor { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.lista-res small {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--tinta-suave);
+  text-align: right;
+  max-width: 48ch;
+  margin-left: auto;
+  overflow-wrap: anywhere;
+}
+
+/* Comprobaciones */
+.avisos { list-style: none; padding: 0; margin: 14px 0 0; display: grid; gap: 6px; }
+.avisos li {
+  padding: 8px 10px 8px 34px;
+  border-radius: var(--radio);
+  position: relative;
+  font-size: 0.9rem;
+  background: #fff;
+  border: 1px solid var(--linea);
+}
+.avisos li::before {
+  position: absolute;
+  left: 10px;
+  top: 7px;
+  font-weight: 700;
+}
+.aviso-ok { border-left: 4px solid var(--ok) !important; }
+.aviso-ok::before { content: "✓"; color: var(--ok); }
+.aviso-mal { border-left: 4px solid var(--mal) !important; }
+.aviso-mal::before { content: "✗"; color: var(--mal); }
+.aviso-info { border-left: 4px solid var(--info) !important; }
+.aviso-info::before { content: "i"; color: var(--info); font-family: Georgia, serif; }
+
+.lienzo-seccion { display: block; width: 100%; height: 170px; margin-bottom: 8px; }
+.lienzo-alto { height: 250px; background: var(--superficie); border: 1px solid var(--linea); border-radius: var(--radio); }
+.campo-ancho { grid-column: 1 / -1; }
+input[readonly], select:disabled { background: var(--fondo); color: var(--tinta-suave); cursor: not-allowed; }
+.casilla { flex-direction: row; align-items: center; gap: 10px; }
+.casilla > input { width: auto; accent-color: var(--acero); }
+.casilla > span:first-child { font-weight: 400; }
+.deslizador { padding: 0; border: 0; accent-color: var(--acero); cursor: pointer; height: 26px; }
+
+/* Botones del paso 7 */
+#paso-separacion .eleccion-fila { flex-wrap: wrap; }
+#paso-separacion .eleccion-fila button { flex: 1 1 auto; }
+#sDesdeCinta { background: var(--superficie); color: var(--tinta); }
+#sDesdeCinta:hover { background: var(--fondo); }
+
+/* ---------- Pie ---------- */
+.pie { margin-top: 28px; color: var(--tinta-suave); font-size: 0.88rem; }
+.pie p { max-width: 90ch; }
+
+/* ---------- Pantallas estrechas ---------- */
+@media (max-width: 900px) {
+  .cabecera { grid-template-columns: 1fr; gap: 16px; }
+  .paso-cuerpo { grid-template-columns: 1fr; }
+  .campos { border-right: 0; border-bottom: 1px solid var(--linea); }
+  .resumen { grid-template-columns: repeat(2, 1fr); }
+  .resumen div { border-bottom: 1px solid var(--linea); }
+  .resumen div:nth-child(2n) { border-right: 0; }
+  .resumen div:last-child { grid-column: 1 / -1; }
+}
+@media (max-width: 560px) {
+  .pagina { padding: 18px 12px 36px; }
+  .campos { grid-template-columns: 1fr; padding: 16px; }
+  .resultados { padding: 16px; }
+  .paso h2 { padding: 12px 16px; font-size: 1.3rem; }
+  #esquema { height: 210px; }
+  .eleccion-fila { flex-direction: column; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior: auto !important; }
+}
+
+/* Panel del caudal (arriba): el dato principal */
+.paso-caudal { border-top: 4px solid var(--material); }
+.paso-caudal .num { background: var(--material); }
+.caudal-cuerpo {
+  padding: 18px 22px 20px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 14px 18px;
+  align-items: end;
+}
+.paso-caudal #Qdato { font-size: 1.25rem; font-weight: 600; }
+#caudal-estado { font-size: 0.95rem; color: var(--tinta); margin: 0; }
+@media (max-width: 560px) { .caudal-cuerpo { grid-template-columns: 1fr; padding: 16px; } }
